@@ -1,8 +1,8 @@
-# Token Snapshot: Create ERC721 Token Snapshot
+# Token Snapshot: Create ERC1155 Token Snapshot
 
-> Forked from [erc20-snapshot](https://github.com/binodnp/erc20-snapshot)
+> Forked from [erc721-snapshot](https://github.com/0xSlot/erc721-snapshot)
 
-This command-line utility creates a snapshot of any ERC721 token in JSON or CSV format. Use your own fully synced Ethereum node or any _Ethereum node as a service_ like Infura.
+This command-line utility creates a snapshot of any ERC1155 token in JSON or CSV format. Use your own fully synced Ethereum node or any _Ethereum node as a service_ like Infura.
 
 - Works without a local Ethereum node.
 - Automatically resumes the next time upon failure.
@@ -11,7 +11,7 @@ This command-line utility creates a snapshot of any ERC721 token in JSON or CSV 
 ## Getting Started
 
 ```
-npm install erc721-snapshot -g
+npm install erc1155-snapshot -g
 ```
 
 ### CLI Arguments
@@ -29,11 +29,11 @@ cd path/to/a/directory
 Run the program:
 
 ```
-erc721-snapshot
+erc1155-snapshot
 ```
 
 ## Configuration File / Prompt Parameters
-To avoid getting prompted for each configuration parameters, each time `erc721-snapshot` is ran, have a `./snapshot.config.json` file at the same location as `erc721-snapshot` is executed.
+To avoid getting prompted for each configuration parameters, each time `erc1155-snapshot` is ran, have a `./snapshot.config.json` file at the same location as `erc1155-snapshot` is executed.
 
 ```json
 {
@@ -54,7 +54,7 @@ Enter your fully synced Ethereum node. Could be a local node or remote services 
 
 ### contractAddress
 
-Address of your ERC721 contract.
+Address of your ERC1155 contract.
 
 ### fromBlock
 
