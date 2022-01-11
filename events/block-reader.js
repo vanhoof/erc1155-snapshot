@@ -11,18 +11,19 @@ const readdirAsync = promisify(fs.readdir);
 const readFileAsync = promisify(fs.readFile);
 
 const getMinimal = (pastEvents) => {
-  const minimalEvents = [];
+  let minimalEvents = [];
 
   for (let i = 0, l = pastEvents.length; i < l; i++) {
     const event = pastEvents[i];
 
     if (event["event"] === "TransferSingle") {
-      minimalEvents.concat(
+      minimalEvents = minimalEvents.concat(
         Array(Number(event.returnValues["4"])).fill({ transactionHash: event.transactionHash, from: event.returnValues["1"], to: event.returnValues["2"], tokenId: event.returnValues["3"] })
       );
     } else if (event["event"] === "TransferBatch") {
+      
       for (let ii = 0, ll = event.returnValues["4"].length; ii < ll; ii++) {
-        minimalEvents.concat(
+        minimalEvents = minimalEvents.concat(
           Array(Number(event.returnValues["4"][ii])).fill({ transactionHash: event.transactionHash, from: event.returnValues["1"], to: event.returnValues["2"], tokenId: event.returnValues["3"][ii] })
         );
       }

@@ -2,32 +2,32 @@
 var BigNumber = require("bignumber.js");
 const enumerable = require("linq");
 
-module.exports.createBalances = async data => {
+module.exports.createBalances = async (data) => {
   const balances = new Map();
   const closingBalances = [];
 
-  const setDeposits = event => {
+  const setDeposits = (event) => {
     const wallet = event.to;
 
     let deposits = (balances.get(wallet) || {}).deposits || [];
     let withdrawals = (balances.get(wallet) || {}).withdrawals || [];
 
     if (!event.tokenId) {
-      throw new TypeError('invalid tokenId value');
+      throw new TypeError("invalid tokenId value");
     }
 
     deposits = [...deposits, event.tokenId];
     balances.set(wallet, { deposits, withdrawals });
   };
 
-  const setWithdrawals = event => {
+  const setWithdrawals = (event) => {
     const wallet = event.from;
 
     let deposits = (balances.get(wallet) || {}).deposits || [];
     let withdrawals = (balances.get(wallet) || {}).withdrawals || [];
 
     if (!event.tokenId) {
-      throw new TypeError('invalid tokenId value');
+      throw new TypeError("invalid tokenId value");
     }
 
     withdrawals = [...withdrawals, event.tokenId];
@@ -44,7 +44,16 @@ module.exports.createBalances = async data => {
       continue;
     }
 
-    const tokenIds = value.deposits.filter(x => !value.withdrawals.includes(x));
+    const tokenIds = [];
+    const withdrawals = [].concat(value.withdrawals);
+    for (let i = 0, l = value.deposits.length; i < l; i++) {
+      const withdrawalIndex = withdrawals.indexOf(value.deposits[i]);
+      if (withdrawalIndex === -1) {
+        tokenIds.push(value.deposits[i]);
+      } else {
+        withdrawals.splice(withdrawalIndex, 1);
+      }
+    }
 
     closingBalances.push({
       wallet: key,
@@ -52,5 +61,5 @@ module.exports.createBalances = async data => {
     });
   }
 
-  return closingBalances.filter(b => b.tokenIds.length > 0);
+  return closingBalances.filter((b) => b.tokenIds.length > 0);
 };
