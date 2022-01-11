@@ -46,7 +46,7 @@ const tryGetEvents = async (start, end, symbol) => {
       const groupSingleKeys = Object.keys(groupSingle);
       const groupBatchKeys = Object.keys(groupBatch);
 
-      const finalKeys = groupSingleKeys.length > groupBatchKeys.length ? groupSingleKeys : groupBatchKeys;
+      const finalKeys = Array.from(new Set(groupSingleKeys.concat(groupBatchKeys)));
 
       const group = {};
 
@@ -116,6 +116,9 @@ module.exports.get = async () => {
       end = toBlock;
     }
   }
+
+  // Hard disk writing is too slow, you need to wait, depending on the file system
+  await sleep(30 * 1000);
 
   const events = await BlockReader.getEvents(symbol);
 
