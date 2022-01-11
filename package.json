@@ -1,6 +1,6 @@
 {
   "name": "erc1155-snapshot",
-  "version": "1.0.4",
+  "version": "1.0.1",
   "description": "ERC1155 Token Snapshot",
   "main": "index.js",
   "scripts": {
