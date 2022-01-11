@@ -2,7 +2,7 @@
 
 const Web3 = require("web3");
 
-const BlockByBlock = require("./block-by-block");
+// const BlockByBlock = require("./block-by-block");
 const BlockReader = require("./block-reader");
 const Config = require("../config").getConfig();
 const Contract = require("../contract").getContract();
@@ -28,28 +28,51 @@ const groupBy = (objectArray, property) => {
 };
 
 const tryGetEvents = async (start, end, symbol) => {
-  try {
-    const pastEvents = await Contract.getPastEvents("Transfer", { fromBlock: start, toBlock: end });
+  for (;;) {
+    try {
+      const pastEventsSingle = await Contract.getPastEvents("TransferSingle", { fromBlock: start, toBlock: end });
+      const pastEventsBatch = await Contract.getPastEvents("TransferBatch", { fromBlock: start, toBlock: end });
 
-    if (pastEvents.length) {
-      console.info("Successfully imported ", pastEvents.length, " events");
-    }
-
-    const group = groupBy(pastEvents, "blockNumber");
-
-    for (let key in group) {
-      if (group.hasOwnProperty(key)) {
-        const blockNumber = key;
-        const data = group[key];
-
-        const file = Parameters.eventsDownloadFilePath.replace(/{token}/g, symbol).replace(/{blockNumber}/g, blockNumber);
-
-        FileHelper.writeFile(file, data);
+      if (pastEventsSingle.length) {
+        console.info("Successfully imported Single", pastEventsSingle.length, " events");
       }
+      if (pastEventsBatch.length) {
+        console.info("Successfully imported Batch", pastEventsBatch.length, " events");
+      }
+
+      const groupSingle = groupBy(pastEventsSingle, "blockNumber");
+      const groupBatch = groupBy(pastEventsBatch, "blockNumber");
+
+      const groupSingleKeys = Object.keys(groupSingle);
+      const groupBatchKeys = Object.keys(groupBatch);
+
+      const finalKeys = groupSingleKeys.length > groupBatchKeys.length ? groupSingleKeys : groupBatchKeys;
+
+      const group = {};
+
+      finalKeys.forEach((v) => {
+        /**@type Array<{logIndex: number}> */
+        const single = groupSingle[v] || [];
+        /**@type Array<{logIndex: number}> */
+        const batch = groupBatch[v] || [];
+
+        group[v] = single.concat(batch).sort((a, b) => a.logIndex - b.logIndex);
+      });
+
+      for (let key in group) {
+        if (group.hasOwnProperty(key)) {
+          const blockNumber = key;
+          const data = group[key];
+
+          const file = Parameters.eventsDownloadFilePath.replace(/{token}/g, symbol).replace(/{blockNumber}/g, blockNumber);
+
+          FileHelper.writeFile(file, data);
+        }
+      }
+      break;
+    } catch (err) {
+      sleep(100);
     }
-  } catch (e) {
-    console.log("Could not get events due to an error. Now checking block by block.");
-    await BlockByBlock.tryBlockByBlock(Contract, start, end, symbol);
   }
 };
 

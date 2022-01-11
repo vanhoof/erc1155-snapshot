@@ -1,26 +1,26 @@
 {
-  "name": "erc721-snapshot",
+  "name": "erc1155-snapshot",
   "version": "1.0.4",
-  "description": "ERC721 Token Snapshot",
+  "description": "ERC1155 Token Snapshot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "bin": {
-    "erc721-snapshot": "index.js"
+    "erc1155-snapshot": "index.js"
   },
   "keywords": [
     "ethereum",
-    "erc721",
+    "erc1155",
     "token",
     "snapshot"
   ],
-  "author": "0xSlot",
+  "author": "pony",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/0xSlot/erc721-snapshot",
+  "homepage": "https://github.com/pony13500815917/erc1155-snapshot",
   "repository": {
     "type": "git",
-    "url": "https://github.com/0xSlot/erc721-snapshot"
+    "url": "https://github.com/pony13500815917/erc1155-snapshot"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
