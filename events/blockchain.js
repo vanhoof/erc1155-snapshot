@@ -66,7 +66,7 @@ const tryGetEvents = async (start, end, symbol) => {
 
           const file = Parameters.eventsDownloadFilePath.replace(/{token}/g, symbol).replace(/{blockNumber}/g, blockNumber);
 
-          FileHelper.writeFile(file, data);
+          await FileHelper.writeFile(file, data);
         }
       }
       break;
@@ -118,7 +118,7 @@ module.exports.get = async () => {
   }
 
   // Hard disk writing is too slow, you need to wait, depending on the file system
-  await sleep(30 * 1000);
+  await sleep(1000);
 
   const events = await BlockReader.getEvents(symbol);
 
