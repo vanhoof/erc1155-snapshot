@@ -93,3 +93,4 @@ tx
 balances
 .cache
 .vscode
+.DS_Store
