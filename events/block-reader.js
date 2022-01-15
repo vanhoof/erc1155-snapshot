@@ -10,28 +10,26 @@ const Parameters = require("../parameters").get();
 const readdirAsync = promisify(fs.readdir);
 const readFileAsync = promisify(fs.readFile);
 
-const getMinimal = (pastEvents) => {
-  let minimalEvents = [];
-
-  for (let i = 0, l = pastEvents.length; i < l; i++) {
-    const event = pastEvents[i];
-
+/**
+ *
+ * @param {Array<{event: "TransferSingle" | "TransferBatch", returnValues: string[]}>} pastEvents
+ * @returns
+ */
+const getMinimal = (pastEvents) =>
+  pastEvents.reduce((acc, event) => {
     if (event["event"] === "TransferSingle") {
-      minimalEvents = minimalEvents.concat(
+      acc = acc.concat(
         Array(Number(event.returnValues["4"])).fill({ transactionHash: event.transactionHash, from: event.returnValues["1"], to: event.returnValues["2"], tokenId: event.returnValues["3"] })
       );
     } else if (event["event"] === "TransferBatch") {
-      
       for (let ii = 0, ll = event.returnValues["4"].length; ii < ll; ii++) {
-        minimalEvents = minimalEvents.concat(
+        acc = acc.concat(
           Array(Number(event.returnValues["4"][ii])).fill({ transactionHash: event.transactionHash, from: event.returnValues["1"], to: event.returnValues["2"], tokenId: event.returnValues["3"][ii] })
         );
       }
     }
-  }
-
-  return minimalEvents;
-};
+    return acc;
+  }, []);
 
 module.exports.getEvents = async (symbol) => {
   const directory = Parameters.eventsDownloadFolder.replace(/{token}/g, symbol);

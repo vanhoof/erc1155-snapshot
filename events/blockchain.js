@@ -2,7 +2,6 @@
 
 const Web3 = require("web3");
 
-// const BlockByBlock = require("./block-by-block");
 const BlockReader = require("./block-reader");
 const Config = require("../config").getConfig();
 const Contract = require("../contract").getContract();
